@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Resume - Event & Operations Strategist</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        :root {
+            --primary: #0070f3;
+            --secondary: #00a8ff;
+            --dark: #111;
+            --light: #f9f9f9;
+            --text: #333;
+            --text-light: #888;
+            --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+        
+        .nav-container {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background-color: rgba(249, 249, 249, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+        }
+        
+        .nav-container.scrolled {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        #contact-btn {
+            background-color: var(--primary);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        #contact-btn:hover {
+            background-color: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 112, 243, 0.4);
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 5%;
+        }
+        
+        #hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #particles-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            line-height: 1.1;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s forwards 0.3s;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: var(--text-light);
+            margin-bottom: 30px;
+            max-width: 600px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s forwards 0.5s;
+        }
+        
+        .hero-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s forwards 0.7s;
+        }
+        
+        .hero-info-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--text-light);
+        }
+        
+        .hero-info-item svg {
+            width: 18px;
+            height: 18px;
+            fill: var(--primary);
+        }
+        
+        .hero-cta {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            text-decoration: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: 500;
+            margin-top: 20px;
+            transition: var(--transition);
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s forwards 0.9s;
+        }
+        
+        .hero-cta:hover {
+            background-color: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 112, 243, 0.4);
+        }
+        
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+            animation: fadeIn 0.8s forwards 1.2s;
+        }
+        
+        .scroll-indicator span {
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            color: var(--text-light);
+        }
+        
+        .scroll-arrow {
+            width: 30px;
+            height: 30px;
+            border: 2px solid var(--primary);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: bounce 2s infinite;
+        }
+        
+        .scroll-arrow svg {
+            width: 12px;
+            height: 12px;
+            fill: var(--primary);
+        }
+        
+        section {
+            padding: 100px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 50px;
+            position: relative;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        
+        .section-title.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -15px;
+            width: 60px;
+            height: 4px;
+            background-color: var(--primary);
+            border-radius: 2px;
+        }
+        
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            margin-bottom: 40px;
+            max-width: 800px;
+            line-height: 1.6;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease 0.2s, transform 0.6s ease 0.2s;
+        }
+        
+        .section-subtitle.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .competencies {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .competency-card {
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+            transform: translateY(50px);
+            opacity: 0;
+        }
+        
+        .competency-card.visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .competency-card:hover {
+            transform: translateY(-5px) !important;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .competency-card h3 {
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        
+        .competency-card p {
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+        
+        /* Experience section styling */
+        .experience-container {
+            position: relative;
+        }
+        
+        .experience-tabs {
+            display: flex;
+            border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+        }
+        
+        .experience-tab {
+            padding: 15px 30px;
+            cursor: pointer;
+            font-weight: 600;
+            position: relative;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: var(--transition);
+        }
+        
+        .experience-tab.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .experience-tab.active {
+            color: var(--primary);
+        }
+        
+        .experience-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--primary);
+        }
+        
+        .experience-content {
+            display: none;
+            animation: fadeIn 0.6s forwards;
+        }
+        
+        .experience-content.active {
+            display: block;
+        }
+        
+        .experience-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .experience-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        
+        .experience-period {
+            font-size: 1rem;
+            color: var(--primary);
+            font-weight: 500;
+        }
+        
+        .experience-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            margin-bottom: 30px;
+        }
+        
+        .experience-categories {
+            margin-top: 30px;
+        }
+        
+        .experience-category {
+            margin-bottom: 30px;
+        }
+        
+        .experience-category-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 15px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .experience-category-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 10px;
+            height: 10px;
+            background-color: var(--primary);
+            border-radius: 50%;
+        }
+        
+        .experience-list {
+            list-style-type: none;
+        }
+        
+        .experience-item {
+            margin-bottom: 15px;
+            position: relative;
+            padding-left: 25px;
+            line-height: 1.6;
+            transform: translateX(30px);
+            opacity: 0;
+            transition: var(--transition);
+        }
+        
+        .experience-item.visible {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        
+        .experience-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 8px;
+            width: 8px;
+            height: 8px;
+            background-color: var(--primary);
+            border-radius: 50%;
+        }
+        
+        /* Skills section styling */
+        .skills-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .skill-card {
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+            transform: translateY(50px);
+            opacity: 0;
+        }
+        
+        .skill-card.visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .skill-card:hover {
+            transform: translateY(-5px) !important;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .skill-card h3 {
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+        
+        .skill-list {
+            list-style-type: none;
+        }
+        
+        .skill-list li {
+            margin-bottom: 12px;
+            position: relative;
+            padding-left: 25px;
+        }
+        
+        .skill-list li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 8px;
+            width: 8px;
+            height: 8px;
+            background-color: var(--primary);
+            border-radius: 50%;
+        }
+
+        /* Contact section styling */
+        #contact {
+            background-color: var(--dark);
+            color: white;
+        }
+        
+        #contact .section-title::after {
+            background-color: white;
+        }
+        
+        .contact-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 50px;
+            align-items: center;
+        }
+        
+        .contact-text {
+            flex: 1;
+            min-width: 300px;
+            opacity: 0;
+            transform: translateX(-30px);
+            transition: var(--transition);
+        }
+        
+        .contact-text.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .contact-text p {
+            margin-bottom: 30px;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+        }
+        
+        .contact-form {
+            flex: 1;
+            min-width: 300px;
+            opacity: 0;
+            transform: translateX(30px);
+            transition: var(--transition);
+        }
+        
+        .contact-form.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            background-color: rgba(255, 255, 255, 0.2);
+            outline: none;
+        }
+        
+        .form-group textarea {
+            height: 150px;
+            resize: vertical;
+        }
+        
+        .submit-btn {
+            background-color: var(--primary);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 30px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .submit-btn:hover {
+            background-color: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Footer styling */
+        footer {
+            background-color: #000;
+            padding: 20px 0;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+        
+        /* Apple-style parallax effect */
+        .parallax-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .parallax-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 120%;
+            height: 120%;
+            background: radial-gradient(circle at center, rgba(0, 112, 243, 0.05) 0%, transparent 70%);
+            transform: translate(-10%, -10%);
+            will-change: transform;
+        }
+        
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .experience-tab {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .experience-title {
+                font-size: 1.5rem;
+            }
+            
+            .contact-content {
+                flex-direction: column;
+                gap: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-container">
+        <nav>
+            <a href="#hero" class="logo">Your Name</a>
+            <div class="nav-links">
+                <a href="#about">About</a>
+                <a href="#experience">Experience</a>
+                <a href="#skills">Skills</a>
+            </div>
+            <button id="contact-btn" onclick="location.href='#contact'">Contact Me</button>
+        </nav>
+    </div>
+    
+    <section id="hero">
+        <div id="particles-container"></div>
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">Event & Operations Strategist</h1>
+                <p class="hero-subtitle">Workflow Automation Architect | AV & Systems Lead</p>
+                <div class="hero-info">
+                    <div class="hero-info-item">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4M20 18H4V8L12 13L20 8V18M20 6L12 11L4 6V6H20V6Z"/>
+                        </svg>
+                        <span>your.email@example.com</span>
+                    </div>
+                    <div class="hero-info-item">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12,11.5A2.5,2.5 0 0,1 9.5,9A2.5,2.5 0 0,1 12,6.5A2.5,2.5 0 0,1 14.5,9A2.5,2.5 0 0,1 12,11.5M12,2A7,7 0 0,0 5,9C5,14.25 12,22 12,22C12,22 19,14.25 19,9A7,7 0 0,0 12,2Z"/>
+                        </svg>
+                        <span>City, State</span>
+                    </div>
+                    <div class="hero-info-item">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M19,3A2,2 0 0,1 21,5V19A2,2 0 0,1 19,21H5A2,2 0 0,1 3,19V5A2,2 0 0,1 5,3H19M18.5,18.5V13.2A3.26,3.26 0 0,0 15.24,9.94C14.39,9.94 13.4,10.46 12.92,11.24V10.13H10.13V18.5H12.92V13.57C12.92,12.8 13.54,12.17 14.31,12.17A1.4,1.4 0 0,1 15.71,13.57V18.5H18.5M6.88,8.56A1.68,1.68 0 0,0 8.56,6.88C8.56,5.95 7.81,5.19 6.88,5.19A1.69,1.69 0 0,0 5.19,6.88C5.19,7.81 5.95,8.56 6.88,8.56M8.27,18.5V10.13H5.5V18.5H8.27Z"/>
+                        </svg>
+                        <span>LinkedIn</span>
+                    </div>
+                </div>
+                <a href="#experience" class="hero-cta">View Experience</a>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <span>Scroll Down</span>
+            <div class="scroll-arrow">
+                <svg viewBox="0 0 24 24">
+                    <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"/>
+                </svg>
+            </div>
+        </div>
+        <div class="parallax-container">
+            <div class="parallax-bg"></div>
+        </div>
+    </section>
+    
+    <section id="about">
+        <div class="container">
+            <h2 class="section-title">About Me</h2>
+            <p class="section-subtitle">Innovative operations and event management expert with over three years at NVIDIA, complemented by extensive experience managing diverse and high-profile trade shows, corporate events, and experiential activations. Expertise spans from strategic event planning and vendor negotiations to deep technical automation, systems architecture, and large-scale live streaming operations.</p>
+            
+            <h3 style="margin-bottom: 30px; font-size: 1.8rem;" class="section-title">Core Competencies</h3>
+            <div class="competencies">
+                <div class="competency-card">
+                    <h3>Event Management</h3>
+                    <p>High-Profile Event & Conference Management with expertise in coordinating large-scale corporate gatherings and trade shows.</p>
+                </div>
+                <div class="competency-card">
+                    <h3>AV Operations</h3>
+                    <p>Live AV Streaming Operations with experience managing concurrent sessions and implementing custom stream-switching systems.</p>
+                </div>
+                <div class="competency-card">
+                    <h3>Workflow Automation</h3>
+                    <p>Workflow Automation & Process Improvement through custom tools and systems that optimize productivity.</p>
+                </div>
+                <div class="competency-card">
+                    <h3>Vendor Management</h3>
+                    <p>Vendor Negotiation & Relationship Management focused on securing strategic partnerships and favorable contract terms.</p>
+                </div>
+                <div class="competency-card">
+                    <h3>Systems Architecture</h3>
+                    <p>Strategic Systems Architecture & Custom Tool Development using JavaScript, Python, and automation platforms.</p>
+                </div>
+                <div class="competency-card">
+                    <h3>Content Management</h3>
+                    <p>Large-scale Content and Asset Management with AI-driven content solutions for efficient digital media operations.</p>
+                </div>
+                <div class="competency-card">
+                    <h3>Operational Excellence</h3>
+                    <p>Cross-Team Collaboration & Operational Excellence with a focus on delivering seamless event experiences.</p>
+                </div>
+                <div class="competency-card">
+                    <h3>Leadership</h3>
+                    <p>Leadership & Operational Strategy Implementation driving significant enhancements in productivity and event quality.</p>
+                </div>
+                <div class="competency-card">
+                    <h3>Digital Media</h3>
+                    <p>Digital Media & AI-driven Content Solutions leveraging cutting-edge technology for innovative operations.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="experience">
+        <div class="container">
+            <h2 class="section-title">Professional Experience</h2>
+            
+            <div class="experience-container">
+                <div class="experience-tabs">
+                    <div class="experience-tab active" data-tab="nvidia">NVIDIA</div>
+                    <div class="experience-tab" data-tab="freelance">Freelance</div>
+                </div>
+                
+                <!-- NVIDIA Experience Content -->
+                <div class="experience-content active" id="nvidia-content">
+                    <div class="experience-header">
+                        <h3 class="experience-title">Event Operations & Automation Architect</h3>
+                        <span class="experience-period">2022 - Present</span>
+                    </div>
+                    <p class="experience-subtitle">Leading operational strategy and technical innovation for NVIDIA's flagship events and conferences.</p>
+                    
+                    <div class="experience-categories">
+                        <div class="experience-category">
+                            <h4 class="experience-category-title">Event & Conference Leadership</h4>
+                            <ul class="experience-list">
+                                <li class="experience-item">Managed operations and execution for NVIDIA's Global Technology Conference (GTC), overseeing hundreds of sessions annually, accommodating thousands of attendees both virtually and in-person.</li>
+                                <li class="experience-item">Coordinated comprehensive logistics for event spaces, exhibit halls, executive areas, and breakout sessions, including oversight of NVIDIA's prominent Inception Program showcase.</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="experience-category">
+                            <h4 class="experience-category-title">Live Streaming & AV Operations</h4>
+                            <ul class="experience-list">
+                                <li class="experience-item">Led the comprehensive streaming strategy for GTC, successfully broadcasting over 600 sessions annually, handling up to 30 concurrent sessions simultaneously.</li>
+                                <li class="experience-item">Innovatively developed and implemented a custom stream-switching system leveraging the Companion App, Stream Deck hardware, and Epiphan Pearl encoder APIs, substantially enhancing session management and broadcast reliability.</li>
+                                <li class="experience-item">Managed multiple AV vendor relationships, including onboarding and guiding AV teams, ensuring quality control for live broadcasts and post-event session recordings.</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="experience-category">
+                            <h4 class="experience-category-title">Automation & Systems Architecture</h4>
+                            <ul class="experience-list">
+                                <li class="experience-item">Conceived and executed extensive automation tools and systems utilized by marketing, event operations, and sponsorship teams, significantly optimizing productivity and reducing human error.</li>
+                                <li class="experience-item">Developed a comprehensive AI-powered headshot automation pipeline used at GTC, processing over 2,000 images efficiently through integration with Stable Diffusion and custom cropping algorithms.</li>
+                                <li class="experience-item">Engineered internal replacements for previously outsourced services, such as the digital signage system showcasing real-time session updates, reducing operational costs significantly.</li>
+                                <li class="experience-item">Created automated systems for collecting, organizing, and distributing sponsor assets and generating sponsor summary decks at scale, streamlining previously manual workflows.</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="experience-category">
+                            <h4 class="experience-category-title">Vendor Management & Negotiation</h4>
+                            <ul class="experience-list">
+                                <li class="experience-item">Spearheaded negotiations for strategic vendor partnerships, including successful negotiations with PhotoRoom for API integration into NVIDIA's workflow.</li>
+                                <li class="experience-item">Evaluated and negotiated contract terms with platforms like Kaltura, introducing alternative solutions such as Vimeo for improved cost-efficiency and service reliability.</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="experience-category">
+                            <h4 class="experience-category-title">Technical Innovation & Implementation</h4>
+                            <ul class="experience-list">
+                                <li class="experience-item">Acted as primary architect, coder, and implementer for custom operational solutions using tools such as JavaScript, Python, Google Apps Script, Microsoft Power Automate, and Adobe scripting.</li>
+                                <li class="experience-item">Managed Microsoft Automate flows for critical internal processes, including referral systems, ensuring streamlined operations and robust data management.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Freelance Experience Content -->
+                <div class="experience-content" id="freelance-content">
+                    <div class="experience-header">
+                        <h3 class="experience-title">Event & Trade Show Manager</h3>
+                        <span class="experience-period">2010 - 2021</span>
+                    </div>
+                    <p class="experience-subtitle">Managing high-profile events and trade shows across multiple industries with a focus on exceptional experiences.</p>
+                    
+                    <div class="experience-categories">
+                        <div class="experience-category">
+                            <h4 class="experience-category-title">Event Management</h4>
+                            <ul class="experience-list">
+                                <li class="experience-item">Managed high-profile New Year's Eve galas and exclusive private events, overseeing end-to-end event logistics, client relations, vendor coordination, and execution.</li>
+                                <li class="experience-item">Led multi-month nationwide product tours, managing extensive logistical coordination, team leadership, and event execution across diverse venues and markets.</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="experience-category">
+                            <h4 class="experience-category-title">Trade Show Execution</h4>
+                            <ul class="experience-list">
+                                <li class="experience-item">Coordinated and executed large-scale trade show events across multiple industries (tech, healthcare, entertainment, automotive), focusing on exhibit management, on-site operations, and stakeholder communications.</li>
+                                <li class="experience-item">Developed event plans, floor plans, and strategic activations that delivered memorable experiences and measurable outcomes for clients.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="skills">
+        <div class="container">
+            <h2 class="section-title">Technical Skills</h2>
+            
+            <div class="skills-container">
+                <div class="skill-card">
+                    <h3>Programming & Scripting</h3>
+                    <ul class="skill-list">
+                        <li>JavaScript</li>
+                        <li>Python</li>
+                        <li>Google Apps Script</li>
+                    </ul>
+                </div>
+                
+                <div class="skill-card">
+                    <h3>Automation & Integration</h3>
+                    <ul class="skill-list">
+                        <li>Microsoft Power Automate</li>
+                        <li>Google Workspace APIs</li>
+                        <li>Custom workflow systems</li>
+                    </ul>
+                </div>
+                
+                <div class="skill-card">
+                    <h3>AV & Streaming Technologies</h3>
+                    <ul class="skill-list">
+                        <li>Epiphan Pearl Encoders</li>
+                        <li>Stream Deck</li>
+                        <li>Companion App</li>
+                    </ul>
+                </div>
+                
+                <div class="skill-card">
+                    <h3>AI & Content Automation</h3>
+                    <ul class="skill-list">
+                        <li>Stable Diffusion</li>
+                        <li>Adobe After Effects scripting</li>
+                        <li>FFmpeg</li>
+                    </ul>
+                </div>
+                
+                <div class="skill-card">
+                    <h3>Digital Event Platforms</h3>
+                    <ul class="skill-list">
+                        <li>Kaltura</li>
+                        <li>Vimeo</li>
+                        <li>Rainfocus</li>
+                        <li>Eventbrite</li>
+                    </ul>
+                </div>
+                
+                <div class="skill-card">
+                    <h3>Collaboration & Productivity</h3>
+                    <ul class="skill-list">
+                        <li>Slack</li>
+                        <li>Google Drive</li>
+                        <li>Trello</li>
+                        <li>Notion</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="contact">
+        <div class="container">
+            <h2 class="section-title">Contact Me</h2>
+            
+            <div class="contact-content">
+                <div class="contact-text">
+                    <p>Interested in discussing potential opportunities or collaborations? Feel free to reach out using the contact form or directly via email.</p>
+                    <p>Email: <a href="mailto:your.email@example.com" style="color: var(--primary); text-decoration: none;">your.email@example.com</a></p>
+                    <p>Location: City, State</p>
+                </div>
+                
+                <div class="contact-form">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" placeholder="Your name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" placeholder="Your email">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" placeholder="Your message"></textarea>
+                    </div>
+                    
+                    <button class="submit-btn">Send Message</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Your Name. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        // Particles.js configuration
+        particlesJS('particles-container', {
+            "particles": {
+                "number": {
+                    "value": 80,
+                    "density": {
+                        "enable": true,
+                        "value_area": 800
+                    }
+                },
+                "color": {
+                    "value": "#0070f3"
+                },
+                "shape": {
+                    "type": "circle",
+                    "stroke": {
+                        "width": 0,
+                        "color": "#000000"
+                    },
+                    "polygon": {
+                        "nb_sides": 5
+                    }
+                },
+                "opacity": {
+                    "value": 0.5,
+                    "random": false,
+                    "anim": {
+                        "enable": false,
+                        "speed": 1,
+                        "opacity_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "size": {
+                    "value": 3,
+                    "random": true,
+                    "anim": {
+                        "enable": false,
+                        "speed": 40,
+                        "size_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 150,
+                    "color": "#0070f3",
+                    "opacity": 0.4,
+                    "width": 1
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 2,
+                    "direction": "none",
+                    "random": false,
+                    "straight": false,
+                    "out_mode": "out",
+                    "bounce": false,
+                    "attract": {
+                        "enable": false,
+                        "rotateX": 600,
+                        "rotateY": 1200
+                    }
+                }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                    "onhover": {
+                        "enable": true,
+                        "mode": "grab"
+                    },
+                    "onclick": {
+                        "enable": true,
+                        "mode": "push"
+                    },
+                    "resize": true
+                },
+                "modes": {
+                    "grab": {
+                        "distance": 140,
+                        "line_linked": {
+                            "opacity": 1
+                        }
+                    },
+                    "bubble": {
+                        "distance": 400,
+                        "size": 40,
+                        "duration": 2,
+                        "opacity": 8,
+                        "speed": 3
+                    },
+                    "repulse": {
+                        "distance": 200,
+                        "duration": 0.4
+                    },
+                    "push": {
+                        "particles_nb": 4
+                    },
+                    "remove": {
+                        "particles_nb": 2
+                    }
+                }
+            },
+            "retina_detect": true
+        });
+
+        // Apple-style parallax effect
+        const parallaxBg = document.querySelector('.parallax-bg');
+        
+        document.addEventListener('mousemove', (e) => {
+            const mouseX = e.clientX / window.innerWidth;
+            const mouseY = e.clientY / window.innerHeight;
+            
+            const moveX = (mouseX - 0.5) * 20;
+            const moveY = (mouseY - 0.5) * 20;
+            
+            parallaxBg.style.transform = `translate(${-10 + moveX}%, ${-10 + moveY}%)`;
+        });
+
+        // Scroll animations
+        const nav = document.querySelector('.nav-container');
+        const sectionTitles = document.querySelectorAll('.section-title');
+        const sectionSubtitles = document.querySelectorAll('.section-subtitle');
+        const competencyCards = document.querySelectorAll('.competency-card');
+        const experienceTabs = document.querySelectorAll('.experience-tab');
+        const experienceItems = document.querySelectorAll('.experience-item');
+        const skillCards = document.querySelectorAll('.skill-card');
+        const contactText = document.querySelector('.contact-text');
+        const contactForm = document.querySelector('.contact-form');
+        
+        // Function to check if element is in viewport
+        function isInViewport(element, offset = 150) {
+            const rect = element.getBoundingClientRect();
+            return (
+                rect.top <= (window.innerHeight - offset) &&
+                rect.bottom >= 0
+            );
+        }
+        
+        // Function to handle scroll animations
+        function handleScrollAnimations() {
+            // Navbar scroll effect
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+            
+            // Animate section titles
+            sectionTitles.forEach(title => {
+                if (isInViewport(title)) {
+                    title.classList.add('visible');
+                }
+            });
+            
+            // Animate section subtitles
+            sectionSubtitles.forEach(subtitle => {
+                if (isInViewport(subtitle)) {
+                    subtitle.classList.add('visible');
+                }
+            });
+            
+            // Animate competency cards
+            competencyCards.forEach((card, index) => {
+                if (isInViewport(card)) {
+                    setTimeout(() => {
+                        card.classList.add('visible');
+                    }, index * 100);
+                }
+            });
+            
+            // Animate experience tabs
+            experienceTabs.forEach((tab, index) => {
+                if (isInViewport(tab)) {
+                    setTimeout(() => {
+                        tab.classList.add('visible');
+                    }, index * 100);
+                }
+            });
+            
+            // Animate experience items
+            experienceItems.forEach((item, index) => {
+                if (isInViewport(item)) {
+                    setTimeout(() => {
+                        item.classList.add('visible');
+                    }, index * 100);
+                }
+            });
+            
+            // Animate skill cards
+            skillCards.forEach((card, index) => {
+                if (isInViewport(card)) {
+                    setTimeout(() => {
+                        card.classList.add('visible');
+                    }, index * 100);
+                }
+            });
+            
+            // Animate contact section
+            if (isInViewport(contactText)) {
+                contactText.classList.add('visible');
+                contactForm.classList.add('visible');
+            }
+        }
+        
+        // Initial call to handle scroll animations
+        window.addEventListener('load', handleScrollAnimations);
+        
+        // Add scroll event listener
+        window.addEventListener('scroll', handleScrollAnimations);
+        
+        // Experience tabs functionality
+        const tabButtons = document.querySelectorAll('.experience-tab');
+        const tabContents = document.querySelectorAll('.experience-content');
+        
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tabId = button.getAttribute('data-tab');
+                
+                // Remove active class from all tabs
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                button.classList.add('active');
+                document.getElementById(`${tabId}-content`).classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
